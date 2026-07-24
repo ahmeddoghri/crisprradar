@@ -1,0 +1,14 @@
+{
+  "tagline": "Local CRISPR-Cas9 guide off-target scanner",
+  "headline": "Score the whole genome before you trust the guide.",
+  "summary": "Scan both strands for NGG-adjacent sites and rank exact, seed, and distal mismatch risk locally.",
+  "accent": "#b7f36b",
+  "topics": "crispr,genomics,off-target,cas9,bioinformatics,guide-rna",
+  "sources": [
+    [
+      "CRISPRitz",
+      "https://github.com/pinellolab/CRISPRitz"
+    ]
+  ],
+  "name": "crisprradar"
+}

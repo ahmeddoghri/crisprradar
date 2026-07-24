@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "crisprradar"
+version = "0.1.0"
+description = "Local CRISPR-Cas9 guide off-target scanner"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "Ahmed Doghri"}]
+dependencies = []
+
+[project.scripts]
+crisprradar = "crisprradar.cli:main"
+
+[tool.setuptools]
+packages = ["crisprradar"]
+
+[tool.setuptools.package-data]
+crisprradar = ["web/*.html"]
