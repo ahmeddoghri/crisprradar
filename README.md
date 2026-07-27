@@ -1,20 +1,23 @@
 # crisprradar
 
-**Local CRISPR-Cas9 guide off-target scanner.**
+**A CRISPR guide can be perfect on-target and still cut somewhere you didn't ask it to.**
 
 ![crisprradar cover](demo/cover.png)
 
-Scan both strands for NGG-adjacent sites and rank exact, seed, and distal mismatch risk locally.
+Cas9 doesn't require an exact match to cut — a guide RNA with a couple of mismatches, especially outside the PAM-proximal seed region, can still find a site and cleave it. That's an off-target edit nobody designed for. crisprradar scans both strands of a sequence for every NGG-adjacent candidate, not just the intended one, and ranks them by exactly where the mismatches fall, because a mismatch in the seed is a very different risk than a mismatch eight bases out.
 
 ![crisprradar workbench](demo/dashboard.png)
 
+## How it works
+
+Walk both strands of the input sequence looking for NGG PAM sites, extract each 20-nucleotide protospacer candidate, and score it against the intended guide by mismatch count and position. A mismatch in the PAM-proximal 8-base seed carries an extra penalty on top of the flat per-mismatch cost, because that's the region where Cas9 is least tolerant of errors and a distal-only mismatch is far more likely to still cut.
+
 ## What ships
 
-- A deterministic domain analysis engine with explicit scope
-- JSON API and responsive local browser workbench
-- CLI demo and file-driven analysis
-- Docker image, unit tests, and GitHub Actions matrix
-- No API keys and no uploaded user data
+- Both-strand NGG PAM scanning over a supplied sequence
+- Seed-vs-distal mismatch weighting, not a flat edit-distance count
+- Specificity scoring per candidate site, ranked worst-first
+- CLI, JSON API, browser workbench, Docker, tests, and CI
 
 ## Run it end to end
 
@@ -32,22 +35,22 @@ Open <http://127.0.0.1:8090>. Analyze your own JSON input with `crisprradar anal
 - `GET /api/demo` returns the committed fixture and result.
 - `POST /api/analyze` runs the same engine on a JSON body.
 
-## Current basis
+## The result
 
-- [CRISPRitz](https://github.com/pinellolab/CRISPRitz)
-
-## Demo result
-
-The scanner checks 149 bases on both strands and returns one exact SpCas9 site plus two NGG-adjacent off-targets. The highest-risk off-target has one seed mismatch and a specificity score of 85.
+Across 149 bases on both strands, the scanner finds the one exact intended site plus two NGG-adjacent off-targets it wouldn't have caught with a single-strand or exact-match-only search. The worst of the two carries one seed mismatch and scores a specificity of 85 — high enough to actually flag for redesign, not just note and forget.
 
 ## Scope
 
-This is a transparent mismatch-only SpCas9/NGG scanner for focused sequences and test fixtures. Genome-scale indexed search, DNA/RNA bulges, chromatin accessibility, allele-specific effects, and experimental validation are intentionally not claimed.
+This is a transparent, mismatch-only SpCas9/NGG scanner sized for a single sequence or test fixture, not a genome-scale indexed search like CRISPRitz or Cas-OFFinder. DNA/RNA bulges, chromatin accessibility, allele-specific effects, and wet-lab validation are real parts of guide design this intentionally doesn't claim.
 
 ## Test
 
 ```bash
 python -m unittest discover -s tests -v
 ```
+
+## Research basis
+
+- [CRISPRitz](https://github.com/pinellolab/CRISPRitz)
 
 MIT licensed.
