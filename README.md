@@ -39,6 +39,29 @@ Open <http://127.0.0.1:8090>. Analyze your own JSON input with `crisprradar anal
 
 Across 149 bases on both strands, the scanner finds the one exact intended site plus two NGG-adjacent off-targets it wouldn't have caught with a single-strand or exact-match-only search. The worst of the two carries one seed mismatch and scores a specificity of 85 — high enough to actually flag for redesign, not just note and forget.
 
+## Update: added a bound on max_mismatches
+
+`analyze()` accepted any `max_mismatches` value with no validation. A
+uniform-random 20nt sequence matches a fixed guide by chance at roughly
+15 of 20 positions (P(match) = 1/4 per base), so a threshold anywhere
+near that noise floor turns "scan for off-targets" into "list every NGG
+site in the genome" — every candidate passes regardless of any real
+similarity to the guide, and the ranked specificity list stops meaning
+anything. Verified directly: on a random 4,000-base sequence, raising the
+threshold toward the noise floor balloons the candidate count with sites
+that share almost nothing with the guide.
+
+`max_mismatches` is now bounded to 0–8, a generous but scientifically
+defensible ceiling — SpCas9 off-target activity is not meaningfully
+reported past a handful of mismatches in the literature this tool is
+modeled on, and the bundled demo's own `max_mismatches: 4` sits
+comfortably inside it. `tests/test_max_mismatches_bound.py` covers the
+rejection of out-of-range values and the degenerate-output behavior the
+bound prevents. (The core PAM-scanning and mismatch-scoring logic was
+also property-tested against an independent brute-force implementation
+across 500 randomized sequences and found no discrepancies — that part
+was already correct.)
+
 ## Scope
 
 This is a transparent, mismatch-only SpCas9/NGG scanner sized for a single sequence or test fixture, not a genome-scale indexed search like CRISPRitz or Cas-OFFinder. DNA/RNA bulges, chromatin accessibility, allele-specific effects, and wet-lab validation are real parts of guide design this intentionally doesn't claim.

@@ -33,6 +33,16 @@ def analyze(payload: dict[str, Any]) -> dict[str, Any]:
     if len(genome) < 23 or set(genome) - set("ACGTN"):
         raise ValueError("genome must contain at least 23 DNA bases")
     maximum = int(payload.get("max_mismatches", 4))
+    if not 0 <= maximum <= 8:
+        # A uniform-random 20nt sequence matches a fixed guide by chance at
+        # ~15/20 positions (P(match)=1/4 per base), so any threshold anywhere
+        # near that noise floor turns "off-target scan" into "list every NGG
+        # site in the genome" -- every candidate passes regardless of any
+        # real similarity to the guide. SpCas9 off-target activity is not
+        # meaningfully reported past a handful of mismatches in the
+        # literature this tool is modeled on, so 8 is a generous but still
+        # scientifically defensible ceiling.
+        raise ValueError("max_mismatches must be between 0 and 8")
     hits = []
     for strand, sequence in (("+", genome), ("-", reverse_complement(genome))):
         for index in range(len(sequence) - 22):
