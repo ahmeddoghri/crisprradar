@@ -17,7 +17,7 @@ Walk both strands of the input sequence looking for NGG PAM sites, extract each 
 - Both-strand NGG PAM scanning over a supplied sequence
 - Seed-vs-distal mismatch weighting, not a flat edit-distance count
 - Specificity scoring per candidate site, ranked worst-first
-- CLI, JSON API, browser workbench, Docker, tests, and CI
+- CLI, JSON API, browser workbench, Docker, tests
 
 ## Run it end to end
 
