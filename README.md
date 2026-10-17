@@ -1,5 +1,7 @@
 # crisprradar
 
+[![tests](https://github.com/ahmeddoghri/crisprradar/actions/workflows/tests.yml/badge.svg)](https://github.com/ahmeddoghri/crisprradar/actions/workflows/tests.yml) [![case study](https://img.shields.io/badge/case%20study-adoghri.com-e0703e)](https://adoghri.com/project-47.html)
+
 **A CRISPR guide can be perfect on-target and still cut somewhere you didn't ask it to.**
 
 ![crisprradar cover](demo/cover.png)
